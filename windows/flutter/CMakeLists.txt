@@ -4,7 +4,25 @@ cmake_minimum_required(VERSION 3.14)
 set(EPHEMERAL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/ephemeral")
 
 # Configuration provided via flutter tool.
-include(${EPHEMERAL_DIR}/generated_config.cmake)
+# Ensure the generated config exists; if not, invoke Flutter to create it.
+if(NOT EXISTS "${EPHEMERAL_DIR}/generated_config.cmake")
+  # Derive project root from this file location: windows/flutter -> windows -> project root.
+  get_filename_component(_WINDOWS_DIR "${CMAKE_CURRENT_SOURCE_DIR}" DIRECTORY)
+  get_filename_component(PROJECT_DIR "${_WINDOWS_DIR}" DIRECTORY)
+  find_program(FLUTTER_BIN NAMES flutter)
+  if(NOT FLUTTER_BIN)
+    message(FATAL_ERROR "Flutter SDK not found in PATH; please install Flutter and add it to PATH.")
+  endif()
+  execute_process(
+    COMMAND "${FLUTTER_BIN}" build windows
+    WORKING_DIRECTORY "${PROJECT_DIR}"
+    RESULT_VARIABLE _FLUTTER_RESULT
+  )
+  if(NOT _FLUTTER_RESULT EQUAL 0)
+    message(FATAL_ERROR "Failed to run 'flutter build windows' to generate ephemeral files.")
+  endif()
+endif()
+include("${EPHEMERAL_DIR}/generated_config.cmake")
 
 # TODO: Move the rest of this into files in ephemeral. See
 # https://github.com/flutter/flutter/issues/57146.
@@ -19,10 +37,10 @@ endif()
 set(FLUTTER_LIBRARY "${EPHEMERAL_DIR}/flutter_windows.dll")
 
 # Published to parent scope for install step.
-set(FLUTTER_LIBRARY ${FLUTTER_LIBRARY} PARENT_SCOPE)
-set(FLUTTER_ICU_DATA_FILE "${EPHEMERAL_DIR}/icudtl.dat" PARENT_SCOPE)
-set(PROJECT_BUILD_DIR "${PROJECT_DIR}/build/" PARENT_SCOPE)
-set(AOT_LIBRARY "${PROJECT_DIR}/build/windows/app.so" PARENT_SCOPE)
+set(FLUTTER_LIBRARY ${FLUTTER_LIBRARY})
+set(FLUTTER_ICU_DATA_FILE "${EPHEMERAL_DIR}/icudtl.dat")
+set(PROJECT_BUILD_DIR "${PROJECT_DIR}/build/")
+set(AOT_LIBRARY "${PROJECT_DIR}/build/windows/app.so")
 
 list(APPEND FLUTTER_LIBRARY_HEADERS
   "flutter_export.h"
@@ -54,6 +72,20 @@ list(APPEND CPP_WRAPPER_SOURCES_APP
   "flutter_view_controller.cc"
 )
 list(TRANSFORM CPP_WRAPPER_SOURCES_APP PREPEND "${WRAPPER_ROOT}/")
+
+# Define apply_standard_settings if missing.
+if(NOT COMMAND apply_standard_settings)
+  function(apply_standard_settings TARGET)
+    # Require C++17 for all targets using this helper.
+    target_compile_features(${TARGET} PUBLIC cxx_std_17)
+    # Basic compile options per compiler.
+    if(MSVC)
+      target_compile_options(${TARGET} PRIVATE /EHsc /Zc:__cplusplus /W3)
+    else()
+      target_compile_options(${TARGET} PRIVATE -fPIC)
+    endif()
+  endfunction()
+endif()
 
 # Wrapper sources needed for a plugin.
 add_library(flutter_wrapper_plugin STATIC
