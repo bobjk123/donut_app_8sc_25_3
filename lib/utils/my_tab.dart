@@ -48,7 +48,7 @@ class MyTab extends StatelessWidget {
           Text(
             text,
             // 💡 Aumentar el tamaño de la fuente (ej. de 10 a 12)
-            style: const TextStyle(fontSize: 15),
+            style: const TextStyle(fontSize: 12),
           ),
         ],
       ),

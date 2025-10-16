@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:donut_app_8sc_25_3/utils/my_tab.dart';
+import 'package:donut_app_8sc_25_3/tab/donut_tab.dart';
+import 'package:donut_app_8sc_25_3/tab/burger_tab.dart';
+import 'package:donut_app_8sc_25_3/tab/smoothie_tab.dart';
+import 'package:donut_app_8sc_25_3/tab/pancake_tab.dart';
+import 'package:donut_app_8sc_25_3/tab/pizza_tab.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -101,7 +106,19 @@ class _HomePageState extends State<HomePage>
             ),
           ),
 
-          // Contenido de las pestañas
+          //3. Contenido de las pestañas
+          Expanded(
+            child: TabBarView(
+              controller: _tabController, // Usa el TabController
+              children: [
+                DonutTab(),
+                BurgerTab(),
+                SmoothieTab(),
+                PanCakeTab(),
+                PizzaTab(),
+              ],
+            ),
+          ),
         ],
       ),
     );
