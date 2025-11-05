@@ -5,29 +5,14 @@ class PanCakeTab extends StatelessWidget {
   PanCakeTab({super.key});
 
   final List<List<dynamic>> pancakeOnSale = [
-    ['Classic', '120', Colors.orange, 'lib/images/cheese_burger.png', 'Five Guys'],
-    ['Big Carl', '179', Colors.pink, 'lib/images/big_carl.webp', 'Carl Jr.'],
-    [
-      'Bacon Cheese Burger',
-      '199',
-      Colors.blue,
-      'lib/images/bacon_cheese_burger.webp',
-      'BBT',
-    ],
-    [
-      'Crispy Chicken',
-      '219',
-      Colors.green,
-      'lib/images/crispy_chicken.webp',
-      'Angry Angus',
-    ],
-    [
-      'Doritos Burger',
-      '250',
-      Colors.purple,
-      'lib/images/doritos_burger.jpeg',
-      'KFC',
-    ],
+    ['Variety Plate', '120', Colors.orange, 'lib/images/variety.jpeg', 'Polly’s Pancake Parlor'],
+    ['Pumpkin Pancakes', '179', Colors.pink, 'lib/images/pumpkin.webp', 'Carl Jr.'],
+    ['Pancake Flight', '199', Colors.blue, 'lib/images/pancake_flight.webp', 'Snooze'],
+    ['Mango Pancakes', '219', Colors.green, 'lib/images/mango_pancakes.webp', 'Pele’s Kitchen'],
+    ['Buttermilk Pancakes', '250', Colors.purple, 'lib/images/buttermilk_pancakes.jpg', 'Deluxe Town Diner'],
+    ['Blueberry Pancakes', '139', Colors.teal, 'lib/images/blueberry_pancakes.jpg', 'Peter’s Pancakes and Waffles'],
+    ['Sourdough Pancakes', '189', Colors.red, 'lib/images/sourdough_pancakes.jpeg', 'Sugar and Spice'],
+    ['Pamela’s Pancakes', '279', Colors.brown, 'lib/images/pamelas_pancakes.webp', 'Pamela’s P & G Diner'],
   ];
 
   @override

@@ -56,16 +56,74 @@ flutter run
 Notes: make sure your emulator is running or your device is connected before `flutter run`.
 
 ## 📁 Project structure (important files in `lib/`)
-Short map of the core files you'll work with:
 
-- `lib/main.dart` — App entry, theme and route setup
-- `lib/screens/home_page.dart` — Main screen: TabBar, TabBarView and overall layout
-- `lib/tab/donut_tab.dart` — Example tab: grid of donut tiles
-- `lib/utils/donut_tile.dart` — UI for each product tile in the grid
-- `lib/utils/my_tab.dart` — Custom tab widget used inside the TabBar
-- `lib/screens/*` — Additional screens and pages
+Tree (ASCII):
 
-Also check `pubspec.yaml` for assets and dependencies (images live under `lib/images` and `lib/icons` in this project).
+```
+lib/
+├─ main.dart                # App entry, themes and route wiring
+├─ icons/                   # small tab icons used by `MyTab`
+│  ├─ donut.png
+│  ├─ burger.png
+│  ├─ pancakes.png
+│  ├─ pizza.png
+│  └─ smoothie.png
+├─ images/                  # product artwork & thumbnails
+│  ├─ chocolate_donut.png
+│  ├─ strawberry_donut.png
+│  ├─ grape_donut.png
+│  ├─ icecream_donut.png
+│  ├─ blueberry_donut.png
+│  └─ ... (other images)
+├─ screens/
+│  └─ home_page.dart        # Main scaffold, TabBar + TabBarView
+├─ tab/                     # Each file is a category view (GridView)
+│  ├─ donut_tab.dart
+│  ├─ burger_tab.dart
+│  ├─ pancake_tab.dart
+│  ├─ pizza_tab.dart
+│  └─ smoothie_tab.dart
+└─ utils/                   # Reusable UI components
+   ├─ donut_tile.dart       # Card/tile used in grids (image, price, actions)
+   ├─ burger_tile.dart
+   ├─ pancake_tile.dart
+   └─ my_tab.dart           # Custom tab widget (icon + label)
+```
+
+Emoji-style quick map:
+
+- 🧭 `main.dart` — app entry & routing
+- 🖼️ `icons/` — small icon assets for tabs
+- 🖼️ `images/` — all product thumbnails used by tiles
+- 📺 `screens/home_page.dart` — TabBar + content area
+- 🗂️ `tab/` — category pages (GridView of tiles)
+- 🧩 `utils/` — reusable tiles and widgets (DonutTile, MyTab)
+
+Widget flow (visual):
+
+```
+[App] -> AppBar
+       -> TabBar (uses MyTab)
+       -> TabBarView
+           -> [Tab Page] (e.g., DonutTab)
+               -> GridView (SliverGridDelegate)
+                   -> DonutTile / BurgerTile (image, price, add)
+```
+
+Optional Mermaid flow (GitHub supports Mermaid diagrams in README):
+
+```mermaid
+flowchart TD
+  A[App Shell] --> B[TabBar]
+  B --> C[TabBarView]
+  C --> D[Category Page]
+  D --> E[GridView]
+  E --> F[Product Tile]
+```
+
+Tips:
+- Use the `utils/` folder for shared UI building blocks.
+- Add new category pages under `tab/` and reuse `DonutTile` or create a specialized tile in `utils/` if the layout differs.
 
 ## 🎬 Demo (GIF)
 Add a GIF to show the whole app in action. Recommended location: `assets/demo.gif`.
