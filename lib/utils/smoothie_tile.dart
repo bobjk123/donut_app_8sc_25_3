@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:donut_app_8sc_25_3/utils/cart.dart';
 
 class SmoothieTile extends StatelessWidget {
   final String smoothieFlavor;
@@ -55,7 +56,10 @@ class SmoothieTile extends StatelessWidget {
             ),
             //Imagen del Smoothie
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 18),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 85.5,
+                vertical: 20,
+              ),
               child: Image.asset(smoothieImagePath),
             ),
 
@@ -77,7 +81,21 @@ class SmoothieTile extends StatelessWidget {
 
                 //Agregar
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    double price = 0.0;
+                    try {
+                      price = double.parse(smoothiePrice);
+                    } catch (_) {
+                      price = 0.0;
+                    }
+                    Cart.instance.add(price);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('$smoothieFlavor added to cart'),
+                        duration: const Duration(milliseconds: 700),
+                      ),
+                    );
+                  },
                   child: Text(
                     'Add',
                     style: TextStyle(

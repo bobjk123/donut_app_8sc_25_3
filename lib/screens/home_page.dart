@@ -5,6 +5,7 @@ import 'package:donut_app_8sc_25_3/tab/burger_tab.dart';
 import 'package:donut_app_8sc_25_3/tab/smoothie_tab.dart';
 import 'package:donut_app_8sc_25_3/tab/pancake_tab.dart';
 import 'package:donut_app_8sc_25_3/tab/pizza_tab.dart';
+import 'package:donut_app_8sc_25_3/utils/cart.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -132,12 +133,23 @@ class _HomePageState extends State<HomePage>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        '2 Items | \$45',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      // Live cart summary: item count and total
+                      AnimatedBuilder(
+                        animation: Cart.instance,
+                        builder: (context, _) {
+                          final items = Cart.instance.itemCount;
+                          final total = Cart.instance.total;
+                          final totalStr = (total % 1 == 0)
+                              ? total.toInt().toString()
+                              : total.toStringAsFixed(2);
+                          return Text(
+                            '$items Items | \$$totalStr',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        },
                       ),
                       Text(
                         'Delivery Charges Included',

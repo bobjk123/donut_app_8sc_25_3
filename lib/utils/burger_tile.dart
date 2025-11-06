@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:donut_app_8sc_25_3/utils/cart.dart';
 
 class BurgerTile extends StatelessWidget {
   final String burgerFlavor;
@@ -77,7 +78,21 @@ class BurgerTile extends StatelessWidget {
 
                 //Agregar
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    double price = 0.0;
+                    try {
+                      price = double.parse(burgerPrice);
+                    } catch (_) {
+                      price = 0.0;
+                    }
+                    Cart.instance.add(price);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('$burgerFlavor added to cart'),
+                        duration: const Duration(milliseconds: 700),
+                      ),
+                    );
+                  },
                   child: Text(
                     'Add',
                     style: TextStyle(

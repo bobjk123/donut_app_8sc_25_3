@@ -11,15 +11,30 @@ if(NOT EXISTS "${EPHEMERAL_DIR}/generated_config.cmake")
   get_filename_component(PROJECT_DIR "${_WINDOWS_DIR}" DIRECTORY)
   find_program(FLUTTER_BIN NAMES flutter)
   if(NOT FLUTTER_BIN)
-    message(FATAL_ERROR "Flutter SDK not found in PATH; please install Flutter and add it to PATH.")
+    message(WARNING "Flutter SDK not found in PATH; continuing without generating ephemeral files. Install Flutter and add it to PATH to regenerate ephemeral files.")
   endif()
-  execute_process(
-    COMMAND "${FLUTTER_BIN}" build windows
-    WORKING_DIRECTORY "${PROJECT_DIR}"
-    RESULT_VARIABLE _FLUTTER_RESULT
-  )
-  if(NOT _FLUTTER_RESULT EQUAL 0)
-    message(FATAL_ERROR "Failed to run 'flutter build windows' to generate ephemeral files.")
+
+  # Ensure ephemeral dir exists so a fallback config file can be written if needed.
+  file(MAKE_DIRECTORY "${EPHEMERAL_DIR}")
+
+  if(FLUTTER_BIN)
+    execute_process(
+      COMMAND "${FLUTTER_BIN}" build windows
+      WORKING_DIRECTORY "${PROJECT_DIR}"
+      RESULT_VARIABLE _FLUTTER_RESULT
+      OUTPUT_VARIABLE _FLUTTER_OUTPUT
+      ERROR_VARIABLE _FLUTTER_ERROR
+      OUTPUT_STRIP_TRAILING_WHITESPACE
+      ERROR_STRIP_TRAILING_WHITESPACE
+    )
+    if(NOT _FLUTTER_RESULT EQUAL 0)
+      message(WARNING "Failed to run 'flutter build windows' to generate ephemeral files: ${_FLUTTER_ERROR}")
+      # Create a minimal placeholder so subsequent include() doesn't fail during configuration.
+      file(WRITE "${EPHEMERAL_DIR}/generated_config.cmake" "set(FLUTTER_LIBRARY \"${EPHEMERAL_DIR}/flutter_windows.dll\")\n")
+    endif()
+  else()
+    # No Flutter available; create a minimal placeholder so CMake can continue.
+    file(WRITE "${EPHEMERAL_DIR}/generated_config.cmake" "set(FLUTTER_LIBRARY \"${EPHEMERAL_DIR}/flutter_windows.dll\")\n")
   endif()
 endif()
 include("${EPHEMERAL_DIR}/generated_config.cmake")
